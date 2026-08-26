@@ -1,0 +1,25 @@
+project:
+  type: book
+  output-dir: _site
+  resources:
+    - images/**
+
+book:
+  title: "GECO Leaflet Map"
+  chapters:
+    - index.qmd
+  page-navigation: false
+  search: false
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: false
+    smooth-scroll: false
+    code-fold: false
+
+execute:
+  echo: false
+  warning: false
+  message: false

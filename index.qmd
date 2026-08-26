@@ -1,0 +1,131 @@
+---
+title: "GECO Leaflet Map"
+pagetitle: "GECO Leaflet Map — Full-screen raster example"
+---
+
+```{r}
+#| label: full-screen-map
+#| echo: false
+
+library(leaflet)
+library(raster)
+
+# Georeference R's built-in Maunga Whau elevation matrix over the Zurich area.
+# This creates a compact, reproducible raster example without external data.
+surface <- raster(
+  nrows = nrow(volcano),
+  ncols = ncol(volcano),
+  xmn = 8.45,
+  xmx = 8.62,
+  ymn = 47.30,
+  ymx = 47.43,
+  crs = "+proj=longlat +datum=WGS84 +no_defs"
+)
+values(surface) <- as.vector(t(volcano[nrow(volcano):1, ]))
+
+raster_palette <- colorNumeric(
+  palette = c("#f4f1e8", "#c7d9ba", "#75b38c", "#519f77", "#24624f", "#3a3a3a"),
+  domain = values(surface),
+  na.color = "transparent"
+)
+
+leaflet(
+  width = "100%",
+  height = "100vh",
+  options = leafletOptions(
+    zoomControl = TRUE,
+    attributionControl = TRUE,
+    minZoom = 10
+  )
+) |>
+  addProviderTiles(
+    providers$CartoDB.Positron,
+    group = "Basemap",
+    options = providerTileOptions(maxZoom = 19)
+  ) |>
+  addRasterImage(
+    surface,
+    colors = raster_palette,
+    opacity = 0.78,
+    project = FALSE,
+    group = "Elevation raster"
+  ) |>
+  addLegend(
+    position = "bottomright",
+    pal = raster_palette,
+    values = values(surface),
+    title = "Elevation value",
+    opacity = 0.9
+  ) |>
+  addLayersControl(
+    position = "topright",
+    baseGroups = "Basemap",
+    overlayGroups = "Elevation raster",
+    options = layersControlOptions(collapsed = FALSE)
+  ) |>
+  fitBounds(lng1 = 8.45, lat1 = 47.30, lng2 = 8.62, lat2 = 47.43)
+```
+
+<aside class="info-panel is-open" id="info-panel" aria-label="Map information">
+<div class="info-panel__content" id="info-panel-content">
+<div class="brand-block">
+<img src="images/geco-logo.png" alt="GECO — Geocomputation and Earth Observation">
+<span class="brand-rule" aria-hidden="true"></span>
+</div>
+
+<p class="eyebrow">Interactive raster example</p>
+<h1>GECO Leaflet Map</h1>
+<p class="lede">This map demonstrates how a gridded surface can be rendered directly in Leaflet from R.</p>
+
+<section>
+<h2>About the layer</h2>
+<p>The coloured cells are a georeferenced version of R’s built-in <code>volcano</code> matrix. Each pixel stores one elevation value; neighbouring colours reveal the shape and gradient of the surface.</p>
+</section>
+
+<section>
+<h2>Explore</h2>
+<ul>
+<li>Pan and zoom across the raster.</li>
+<li>Toggle the raster in the layer control.</li>
+<li>Use the legend to interpret cell values.</li>
+</ul>
+</section>
+
+<section class="references">
+<h2>References</h2>
+<ol>
+<li><a href="https://rstudio.github.io/leaflet/" target="_blank" rel="noopener">Leaflet for R documentation</a></li>
+<li><a href="https://rspatial.org/raster/" target="_blank" rel="noopener">Spatial Data Science with R</a></li>
+<li><a href="https://github.com/geco-bern/R_book_template" target="_blank" rel="noopener">GECO R book template</a></li>
+</ol>
+</section>
+</div>
+
+<button class="info-panel__toggle" type="button" aria-expanded="true" aria-controls="info-panel-content">
+<span class="toggle-icon" aria-hidden="true">‹</span>
+<span class="toggle-label">Hide information</span>
+</button>
+</aside>
+
+<script>
+(() => {
+  const panel = document.getElementById('info-panel');
+  const button = panel?.querySelector('.info-panel__toggle');
+  const icon = panel?.querySelector('.toggle-icon');
+  const label = panel?.querySelector('.toggle-label');
+
+  if (!panel || !button || !icon || !label) return;
+
+  const setOpen = (open) => {
+    panel.classList.toggle('is-open', open);
+    button.setAttribute('aria-expanded', String(open));
+    icon.textContent = open ? '‹' : '›';
+    label.textContent = open ? 'Hide information' : 'Show information';
+  };
+
+  button.addEventListener('click', () => setOpen(!panel.classList.contains('is-open')));
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') setOpen(false);
+  });
+})();
+</script>
