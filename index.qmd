@@ -1,110 +1,72 @@
 ---
-title: "GECO Leaflet Map"
-pagetitle: "GECO Leaflet Map — Full-screen raster example"
+title: "Cumulative water deficit across the contiguous United States"
+pagetitle: "Cumulative water deficit across the contiguous United States"
 ---
 
-```{r}
-#| label: full-screen-map
-#| echo: false
+```{=html}
+<style>
+/* The map is an Earth Engine App served in an iframe, not a leaflet widget.
+   position: fixed makes it fill the viewport independently of the Quarto
+   content container; the information panel is lifted above it. */
+.ee-app-frame {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  border: 0;
+  display: block;
+  z-index: 0;
+}
 
-library(leaflet)
-library(raster)
+.info-panel {
+  z-index: 1000;
+}
 
-# Georeference R's built-in Maunga Whau elevation matrix over the Zurich area.
-# This creates a compact, reproducible raster example without external data.
-surface <- raster(
-  nrows = nrow(volcano),
-  ncols = ncol(volcano),
-  xmn = 8.45,
-  xmx = 8.62,
-  ymn = 47.30,
-  ymx = 47.43,
-  crs = "+proj=longlat +datum=WGS84 +no_defs"
-)
-values(surface) <- as.vector(t(volcano[nrow(volcano):1, ]))
+.info-panel a {
+  overflow-wrap: anywhere;
+}
+</style>
 
-raster_palette <- colorNumeric(
-  palette = c("#f4f1e8", "#c7d9ba", "#75b38c", "#519f77", "#24624f", "#3a3a3a"),
-  domain = values(surface),
-  na.color = "transparent"
-)
-
-leaflet(
-  width = "100%",
-  height = "100vh",
-  options = leafletOptions(
-    zoomControl = TRUE,
-    attributionControl = TRUE,
-    minZoom = 10
-  )
-) |>
-  addProviderTiles(
-    providers$CartoDB.Positron,
-    group = "Basemap",
-    options = providerTileOptions(maxZoom = 19)
-  ) |>
-  addRasterImage(
-    surface,
-    colors = raster_palette,
-    opacity = 0.78,
-    project = FALSE,
-    group = "Elevation raster"
-  ) |>
-  addLegend(
-    position = "bottomright",
-    pal = raster_palette,
-    values = values(surface),
-    title = "Elevation value",
-    opacity = 0.9
-  ) |>
-  addLayersControl(
-    position = "topright",
-    baseGroups = "Basemap",
-    overlayGroups = "Elevation raster",
-    options = layersControlOptions(collapsed = FALSE)
-  ) |>
-  fitBounds(lng1 = 8.45, lat1 = 47.30, lng2 = 8.62, lat2 = 47.43)
-```
+<iframe
+  class="ee-app-frame"
+  src="https://dafaeh.users.earthengine.app/view/cwd-conus"
+  title="Maximum cumulative water deficit, contiguous United States"
+  allowfullscreen>
+</iframe>
 
 <aside class="info-panel is-open" id="info-panel" aria-label="Map information">
-<div class="info-panel__content" id="info-panel-content">
-<div class="brand-block">
-<img src="images/geco-logo.png" alt="GECO — Geocomputation and Earth Observation">
-<span class="brand-rule" aria-hidden="true"></span>
-</div>
+  <div class="info-panel__content" id="info-panel-content">
+    <div class="brand-block">
+      <img src="images/geco-logo.png" alt="GECO — Geocomputation and Earth Observation">
+      <span class="brand-rule" aria-hidden="true"></span>
+    </div>
 
-<p class="eyebrow">Interactive raster example</p>
-<h1>GECO Leaflet Map</h1>
-<p class="lede">This map demonstrates how a gridded surface can be rendered directly in Leaflet from R.</p>
+    <p class="eyebrow">Interactive raster</p>
+    <h1>Cumulative water deficit across the contiguous United States</h1>
+    <p class="lede">This map shows the maximum cumulative water deficit between 2020 and 2022 per 30 m pixel in mm. Darker shades indicate larger deficits. Everything above 840 mm (the 98th percentile of the raster) is drawn in the same darkest shade for maximum contrast at the large scale. Click on a pixel to read its value.</p>
 
-<section>
-<h2>About the layer</h2>
-<p>The coloured cells are a georeferenced version of R’s built-in <code>volcano</code> matrix. Each pixel stores one elevation value; neighbouring colours reveal the shape and gradient of the surface.</p>
-</section>
+    <section>
+      <h2>Data</h2>
+      <ul>
+        <li>Evapotranspiration: OpenET DisALEXI model providing actual ET at 30 m resolution (Melton et al., 2022): <a href="https://doi.org/10.1111/1752-1688.12956" target="_blank" rel="noopener">https://doi.org/10.1111/1752-1688.12956</a></li>
+        <li>Precipitation: DAYMET gridded daily precipitation at 1 km resolution (Thornton et al., 2021): <a href="https://doi.org/10.1038/s41597-021-00973-0" target="_blank" rel="noopener">https://doi.org/10.1038/s41597-021-00973-0</a></li>
+      </ul>
+    </section>
 
-<section>
-<h2>Explore</h2>
-<ul>
-<li>Pan and zoom across the raster.</li>
-<li>Toggle the raster in the layer control.</li>
-<li>Use the legend to interpret cell values.</li>
-</ul>
-</section>
+    <section>
+      <h2>About this map</h2>
+      <p>The raster is too large to embed in a web page, so it is built as a <a href="https://dafaeh.users.earthengine.app/view/cwd-conus" target="_blank" rel="noopener">Google Earth Engine App</a> and shown here in a frame. The page around it is built from the <a href="https://github.com/geco-bern/geco-leaflet-map" target="_blank" rel="noopener">GECO leaflet map template</a>.</p>
 
-<section class="references">
-<h2>References</h2>
-<ol>
-<li><a href="https://rstudio.github.io/leaflet/" target="_blank" rel="noopener">Leaflet for R documentation</a></li>
-<li><a href="https://rspatial.org/raster/" target="_blank" rel="noopener">Spatial Data Science with R</a></li>
-<li><a href="https://github.com/geco-bern/R_book_template" target="_blank" rel="noopener">GECO R book template</a></li>
-</ol>
-</section>
-</div>
+      <p>The GitHub repository containing the source code: <a href="https://github.com/dafaeh/ba_faehdavid" target="_blank" rel="noopener">ba_faehdavid</a>.</p>
 
-<button class="info-panel__toggle" type="button" aria-expanded="true" aria-controls="info-panel-content">
-<span class="toggle-icon" aria-hidden="true">‹</span>
-<span class="toggle-label">Hide information</span>
-</button>
+      <p>For further information please contact GECO Bern.</p>
+    </section>
+  </div>
+
+  <button class="info-panel__toggle" type="button" aria-expanded="true" aria-controls="info-panel-content">
+    <span class="toggle-icon" aria-hidden="true">‹</span>
+    <span class="toggle-label">Hide information</span>
+  </button>
 </aside>
 
 <script>
@@ -113,7 +75,6 @@ leaflet(
   const button = panel?.querySelector('.info-panel__toggle');
   const icon = panel?.querySelector('.toggle-icon');
   const label = panel?.querySelector('.toggle-label');
-
   if (!panel || !button || !icon || !label) return;
 
   const setOpen = (open) => {
@@ -129,3 +90,4 @@ leaflet(
   });
 })();
 </script>
+```
