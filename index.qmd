@@ -43,7 +43,7 @@ pagetitle: "Cumulative water deficit across the contiguous United States"
 
     <p class="eyebrow">Interactive raster</p>
     <h1>Cumulative water deficit across the contiguous United States</h1>
-    <p class="lede">This map shows the maximum cumulative water deficit between 2020 and 2022 per 30 m pixel in mm. Darker shades indicate larger deficits. Everything above 840 mm (the 98th percentile of the raster) is drawn in the same darkest shade for maximum contrast at the large scale. Click on a pixel to read its value.</p>
+    <p class="lede">This map shows the maximum cumulative water deficit between 2020 and 2022 per 30 m pixel in mm. Darker shades indicate larger deficits. Everything above 840 mm is drawn in the same darkest shade for maximum contrast at the large scale. Click on a pixel to read its value.</p>
 
     <section>
       <h2>Data</h2>
