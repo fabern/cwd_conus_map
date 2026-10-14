@@ -59,7 +59,7 @@ pagetitle: "Cumulative water deficit across the contiguous United States"
 
       <p>The GitHub repository containing the source code: <a href="https://github.com/dafaeh/ba_faehdavid" target="_blank" rel="noopener">ba_faehdavid</a>.</p>
 
-      <p>For further information please contact GECO Bern.</p>
+      <p>For further information please <a href="https://geco-group.org/contact/" target="_blank" rel="noopener">contact GECO Bern</a>.</p>
     </section>
   </div>
 
