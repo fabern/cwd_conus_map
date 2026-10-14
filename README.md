@@ -2,7 +2,7 @@
 
 A single-page map of the maximum cumulative water deficit (`cwd_max`) across the contiguous United States, 2020–2022, at 30 m resolution. The page is built with Quarto from the [GECO leaflet map template](https://github.com/geco-bern/geco-leaflet-map) and published with GitHub Pages.
 
-Live map: https://dafaeh.github.io/ba-cwd-map/
+Live map: https://dafaeh.github.io/cwd_conus_map
 
 ## How the map works
 
